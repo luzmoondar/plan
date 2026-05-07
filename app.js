@@ -22,10 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     monthlyTasks: user.monthlyTasks || []
                 };
             });
-            if (!currentUser && Object.keys(appData).length > 0) {
+            if (myIdentity && !appData[myIdentity]) {
+                // If profile was lost from server, ask to recreate
+                localStorage.removeItem('planMateIdentity');
+                myIdentity = null;
+                currentUser = Object.keys(appData)[0];
+                const welcomeModal = document.getElementById('welcome-modal');
+                if (welcomeModal) welcomeModal.classList.add('active');
+            } else if (!currentUser && Object.keys(appData).length > 0) {
                 currentUser = Object.keys(appData)[0];
             }
             render();
+        } else if (error) {
+            alert('데이터 로드 실패: ' + error.message);
         }
     }
 
@@ -136,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const { error } = await supabaseApp.from('planmate_users').upsert({
             id: myData.id,
+            name: myData.name,
             avatar: myData.avatar,
             color: myData.color,
             yearlyGoals: myData.yearlyGoals,
@@ -144,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (error) {
             console.error('Supabase Save Error:', error);
+            alert('데이터 저장 실패 (Supabase 설정 확인 필요): ' + error.message);
         }
     }
 
@@ -346,6 +357,80 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Edit Profile Logic
+    const editModal = document.getElementById('edit-profile-modal');
+    const editSaveBtn = document.getElementById('edit-save-btn');
+    const editCancelBtn = document.getElementById('edit-cancel-btn');
+    const editInputName = document.getElementById('edit-input-name');
+    let editSelectedColor = '#10B981';
+
+    if (editModal) {
+        document.querySelectorAll('.edit-color-option').forEach(el => {
+            el.addEventListener('click', (e) => {
+                document.querySelectorAll('.edit-color-option').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                editSelectedColor = e.target.getAttribute('data-color');
+            });
+        });
+
+        window.openEditProfile = function() {
+            if (!myIdentity || !appData[myIdentity]) return;
+            const myData = appData[myIdentity];
+            editInputName.value = myData.name;
+            editSelectedColor = myData.color;
+            document.querySelectorAll('.edit-color-option').forEach(c => {
+                if (c.getAttribute('data-color') === myData.color) {
+                    c.classList.add('active');
+                } else {
+                    c.classList.remove('active');
+                }
+            });
+            editModal.classList.add('active');
+        };
+
+        editCancelBtn.addEventListener('click', () => {
+            editModal.classList.remove('active');
+        });
+
+        editSaveBtn.addEventListener('click', async () => {
+            const newName = editInputName.value.trim();
+            if (!newName) {
+                alert('이름을 입력해주세요!');
+                return;
+            }
+
+            const oldIdentity = myIdentity;
+            const myData = appData[oldIdentity];
+
+            if (newName !== oldIdentity && appData[newName]) {
+                alert('이미 다른 사용자가 사용중인 이름입니다.');
+                return;
+            }
+
+            const updatedData = {
+                ...myData,
+                id: newName,
+                name: newName,
+                avatar: newName.substring(0, 2),
+                color: editSelectedColor
+            };
+
+            if (newName !== oldIdentity) {
+                await supabaseApp.from('planmate_users').delete().eq('id', oldIdentity);
+                delete appData[oldIdentity];
+                myIdentity = newName;
+                localStorage.setItem('planMateIdentity', newName);
+                currentUser = newName;
+            }
+
+            appData[newName] = updatedData;
+            await saveData();
+
+            editModal.classList.remove('active');
+            render();
+        });
+    }
 
     function renderMyView() {
         const container = document.getElementById('my-progress-container');

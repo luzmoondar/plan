@@ -60,6 +60,7 @@
             <section class="my-settings-section" style="padding: 24px;">
                 <div class="section-header">
                     <h2 class="section-title">내 목표 진척도 업데이트 📈</h2>
+                    <button class="icon-btn text-muted" onclick="openEditProfile()" title="프로필 수정"><i class="ri-edit-line"></i></button>
                 </div>
                 <p class="goal-desc" style="margin-bottom: 24px;">게이지 칸을 터치하여 4단계로 진행 상황을 기록하세요.</p>
                 <div id="my-progress-container">
@@ -125,6 +126,31 @@
             </div>
 
             <button class="btn-save" id="welcome-save-btn" style="width: 100%; padding: 14px; font-size: 16px;">시작하기</button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="edit-profile-modal" style="background: rgba(0,0,0,0.5); z-index: 2000;">
+        <div class="modal-content" style="box-shadow: none; max-width: 400px; text-align: center; border: 1px solid var(--border-color);">
+            <h2 style="margin-bottom: 24px; font-weight: 800;">프로필 수정</h2>
+            
+            <input type="text" id="edit-input-name" placeholder="새로운 이름" style="text-align: center; font-weight: 600; width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 16px; outline: none;">
+            
+            <div style="margin-bottom: 24px;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; text-align: center;">테마 컬러 변경</p>
+                <div style="display: flex; gap: 12px; justify-content: center;" id="edit-color-picker">
+                    <div class="color-option edit-color-option active" data-color="#10B981" style="background-color: #10B981;"></div>
+                    <div class="color-option edit-color-option" data-color="#3B82F6" style="background-color: #3B82F6;"></div>
+                    <div class="color-option edit-color-option" data-color="#EC4899" style="background-color: #EC4899;"></div>
+                    <div class="color-option edit-color-option" data-color="#F59E0B" style="background-color: #F59E0B;"></div>
+                    <div class="color-option edit-color-option" data-color="#8B5CF6" style="background-color: #8B5CF6;"></div>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="justify-content: center;">
+                <button class="btn-cancel" id="edit-cancel-btn" style="flex: 1;">취소</button>
+                <button class="btn-save" id="edit-save-btn" style="flex: 1;">저장</button>
+            </div>
         </div>
     </div>
 
