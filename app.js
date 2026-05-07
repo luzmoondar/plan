@@ -169,6 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveModalData() {
+        if (currentUser !== myIdentity) {
+            alert('자신의 프로필에만 목표를 추가할 수 있습니다.');
+            return;
+        }
         const title = modalInputTitle.value.trim();
         const desc = modalInputDesc.value.trim();
         if (!title) {
@@ -504,6 +508,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.deleteYearlyGoal = function(goalId, event) {
         if (event) event.stopPropagation();
+        if (currentUser !== myIdentity) {
+            alert('자신의 목표만 삭제할 수 있습니다.');
+            return;
+        }
         if (confirm('이 연간 목표를 정말 삭제하시겠습니까? (MY 탭에서도 삭제됩니다)')) {
             const userObj = appData[currentUser];
             userObj.yearlyGoals = userObj.yearlyGoals.filter(g => g.id !== goalId);
@@ -514,6 +522,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.deleteMonthlyTask = function(taskId, event) {
         if (event) event.stopPropagation();
+        if (currentUser !== myIdentity) {
+            alert('자신의 계획만 삭제할 수 있습니다.');
+            return;
+        }
         if (confirm('이 계획을 정말 삭제하시겠습니까?')) {
             const userObj = appData[currentUser];
             userObj.monthlyTasks = userObj.monthlyTasks.filter(t => t.id !== taskId);
