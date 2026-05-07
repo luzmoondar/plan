@@ -450,8 +450,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderMyView() {
         const container = document.getElementById('my-progress-container');
         container.innerHTML = '';
-        if (!currentUser || !appData[currentUser]) return;
-        const userObj = appData[currentUser];
+        // 항상 나의 데이터(myIdentity)를 기준으로 렌더링
+        if (!myIdentity || !appData[myIdentity]) return;
+        const userObj = appData[myIdentity];
         
         if (userObj.yearlyGoals.length === 0) {
             container.innerHTML = '<div class="empty-state">등록된 연간 목표가 없습니다. 홈 화면에서 먼저 추가해주세요.</div>';
@@ -486,11 +487,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.updateProgress = function(goalId, stepValue) {
-        if (currentUser !== myIdentity) {
-            alert('자신의 목표 진척도만 수정할 수 있습니다.');
-            return;
-        }
-        const userObj = appData[currentUser];
+        // 'MY' 탭에서는 현재 선택된 사람과 상관없이 항상 나의 데이터(myIdentity)를 수정
+        const userObj = appData[myIdentity];
+        if (!userObj) return;
+
         const goal = userObj.yearlyGoals.find(g => g.id === goalId);
         if (goal) {
             // If clicking the current exact progress, unset it to the previous step or 0
