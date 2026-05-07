@@ -126,15 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.getElementById('add-yearly-btn').addEventListener('click', () => openModal('yearly'));
     document.getElementById('add-monthly-btn').addEventListener('click', () => openModal('monthly'));
-    document.getElementById('reset-data-btn').addEventListener('click', async () => {
-        if(confirm('내 프로필을 삭제하고 처음으로 돌아가시겠습니까? (Supabase 데이터에서도 삭제됩니다)')) {
-            if (myIdentity) {
-                await supabaseApp.from('planmate_users').delete().eq('id', myIdentity);
-            }
-            localStorage.removeItem('planMateIdentity');
-            location.reload();
-        }
-    });
+
 
     modalCancel.addEventListener('click', closeModal);
     modalSave.addEventListener('click', saveModalData);
@@ -271,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <span class="badge" style="${getBadgeStyle(goal.badge)}">${goal.badge}</span>
                     </div>
+                    ${goal.desc ? `<p class="goal-desc-text" style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">${goal.desc}</p>` : ''}
                     <div class="progress-bar-container">
                         <div class="progress-bar" style="width: ${goal.progress}%; background-color: var(--primary-color);"></div>
                     </div>
