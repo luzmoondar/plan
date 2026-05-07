@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Together Plan</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="ri-leaf-fill"></i>
+                <h1>PlanMate</h1>
+            </div>
+            <button class="icon-btn" id="reset-data-btn" title="데이터 초기화"><i class="ri-refresh-line"></i></button>
+        </header>
+
+        <!-- Views Container -->
+        <div id="view-home">
+            <!-- Friends List -->
+            <section class="friends-section">
+                <h2 class="section-title">함께하는 친구들</h2>
+                <div class="friends-scroll" id="friends-container">
+                    <!-- Rendered by JS -->
+                </div>
+            </section>
+
+            <!-- Dynamic Content Area -->
+            <div id="content-area">
+                <!-- Yearly Plan -->
+                <section class="yearly-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><span id="current-user-name">나</span>의 2026년 목표 🚀</h2>
+                        <button class="icon-btn text-green" id="add-yearly-btn"><i class="ri-add-circle-fill"></i></button>
+                    </div>
+                    <div class="yearly-card" id="yearly-container">
+                        <!-- Rendered by JS -->
+                    </div>
+                </section>
+
+                <!-- Monthly Plan -->
+                <section class="monthly-section">
+                    <div class="section-header">
+                        <h2 class="section-title">이번 달 계획 🗓️</h2>
+                        <button class="icon-btn text-green" id="add-monthly-btn"><i class="ri-add-circle-fill"></i></button>
+                    </div>
+                    <div class="task-list" id="monthly-container">
+                        <!-- Rendered by JS -->
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- MY View -->
+        <div id="view-my" style="display: none;">
+            <section class="my-settings-section" style="padding: 24px;">
+                <div class="section-header">
+                    <h2 class="section-title">내 목표 진척도 업데이트 📈</h2>
+                </div>
+                <p class="goal-desc" style="margin-bottom: 24px;">게이지 칸을 터치하여 4단계로 진행 상황을 기록하세요.</p>
+                <div id="my-progress-container">
+                    <!-- Rendered by JS -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="ri-home-5-fill"></i>
+            <span>홈</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="ri-bar-chart-box-line"></i>
+            <span>통계</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="ri-user-line"></i>
+            <span>MY</span>
+        </a>
+    </nav>
+
+    <!-- Simple Modals -->
+    <div class="modal-overlay" id="add-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">목표 추가</h3>
+            <select id="modal-input-badge" style="display:none; width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; background-color: white;">
+                <option value="취미">취미</option>
+                <option value="운동">운동</option>
+                <option value="자기개발">자기개발</option>
+                <option value="기타">기타</option>
+            </select>
+            <input type="text" id="modal-input-title" placeholder="제목을 입력하세요">
+            <input type="text" id="modal-input-desc" placeholder="상세 내용을 입력하세요">
+            <div class="modal-actions">
+                <button class="btn-cancel" id="modal-cancel">취소</button>
+                <button class="btn-save" id="modal-save">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div class="modal-overlay" id="welcome-modal" style="background: var(--bg-color); z-index: 2000;">
+        <div class="modal-content" style="box-shadow: none; max-width: 400px; text-align: center; border: 1px solid var(--border-color);">
+            <div style="font-size: 40px; margin-bottom: 16px;">👋</div>
+            <h2 style="margin-bottom: 8px; font-weight: 800;">환영합니다!</h2>
+            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">함께 목표를 공유할 프로필을 만들어주세요.</p>
+            
+            <input type="text" id="welcome-input-name" placeholder="이름 (예: 지수)" style="text-align: center; font-weight: 600; width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 16px; outline: none;">
+            
+            <div style="margin-bottom: 24px;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; text-align: center;">테마 컬러 선택</p>
+                <div style="display: flex; gap: 12px; justify-content: center;" id="color-picker">
+                    <div class="color-option active" data-color="#10B981" style="background-color: #10B981;"></div>
+                    <div class="color-option" data-color="#3B82F6" style="background-color: #3B82F6;"></div>
+                    <div class="color-option" data-color="#EC4899" style="background-color: #EC4899;"></div>
+                    <div class="color-option" data-color="#F59E0B" style="background-color: #F59E0B;"></div>
+                    <div class="color-option" data-color="#8B5CF6" style="background-color: #8B5CF6;"></div>
+                </div>
+            </div>
+
+            <button class="btn-save" id="welcome-save-btn" style="width: 100%; padding: 14px; font-size: 16px;">시작하기</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+</html>
