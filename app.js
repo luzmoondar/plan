@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data.forEach(user => {
                 appData[user.id] = {
                     id: user.id,
-                    name: user.id,
+                    name: user.name || user.id,
                     avatar: user.avatar,
                     color: user.color,
                     yearlyGoals: user.yearlyGoals || [],
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (user && user.id) {
                     appData[user.id] = {
                         id: user.id,
-                        name: user.id,
+                        name: user.name || user.id,
                         avatar: user.avatar,
                         color: user.color,
                         yearlyGoals: user.yearlyGoals || [],
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (error) {
             console.error('Supabase Save Error:', error);
-            alert('데이터 저장 실패 (Supabase 설정 확인 필요): ' + error.message);
+            alert(`데이터 저장 실패!\n\n메시지: ${error.message}\n코드: ${error.code}\n힌트: ${error.hint || '없음'}\n\n(Supabase 테이블 생성 및 RLS 설정을 확인해주세요)`);
         }
     }
 
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         yearlyContainer.innerHTML = '';
         if (!currentUser || !appData[currentUser]) return;
         const goals = appData[currentUser].yearlyGoals;
-        currentUserName.textContent = appData[currentUser].avatar;
+        currentUserName.textContent = appData[currentUser].name;
 
         if (goals.length === 0) {
             yearlyContainer.innerHTML = '<div class="empty-state">등록된 연간 목표가 없습니다. 우측 + 버튼을 눌러 추가해보세요!</div>';
