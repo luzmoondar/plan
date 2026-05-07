@@ -202,12 +202,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleTask(taskId) {
+        if (currentUser !== myIdentity) {
+            alert('자신의 계획만 체크할 수 있습니다.');
+            return;
+        }
         const userObj = appData[currentUser];
         const task = userObj.monthlyTasks.find(t => t.id === taskId);
         if (task) {
             task.completed = !task.completed;
             saveData();
-            renderMonthly(); // re-render to update UI
+            renderMonthly();
         }
     }
 
@@ -215,7 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderFriends() {
         friendsContainer.innerHTML = '';
-        Object.keys(appData).forEach(userName => {
+        // 나(myIdentity)를 가장 먼저, 나머지는 이름순으로 정렬
+        const sortedUserNames = Object.keys(appData).sort((a, b) => {
+            if (a === myIdentity) return -1;
+            if (b === myIdentity) return 1;
+            return a.localeCompare(b);
+        });
+
+        sortedUserNames.forEach(userName => {
             const user = appData[userName];
             const isActive = userName === currentUser;
             const friendHTML = `
@@ -253,13 +264,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const isMyProfile = currentUser === myIdentity;
         goals.forEach(goal => {
             const goalHTML = `
                 <div class="goal-item">
                     <div class="goal-info">
                         <div style="display: flex; align-items: center; gap: 6px;">
                             <h3>${goal.title}</h3>
-                            <button class="delete-btn" onclick="deleteYearlyGoal(${goal.id}, event)"><i class="ri-delete-bin-line"></i></button>
+                            ${isMyProfile ? `<button class="delete-btn" onclick="deleteYearlyGoal(${goal.id}, event)"><i class="ri-delete-bin-line"></i></button>` : ''}
                         </div>
                         <span class="badge" style="${getBadgeStyle(goal.badge)}">${goal.badge}</span>
                     </div>
@@ -294,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const isMyProfile = currentUser === myIdentity;
         tasks.forEach(task => {
             const taskHTML = `
                 <div class="task-card ${task.completed ? 'completed' : ''}" onclick="toggleTask(${task.id})">
@@ -304,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h4>${task.title}</h4>
                         <p>${task.desc}</p>
                     </div>
-                    <button class="delete-btn" onclick="deleteMonthlyTask(${task.id}, event)"><i class="ri-delete-bin-line"></i></button>
+                    ${isMyProfile ? `<button class="delete-btn" onclick="deleteMonthlyTask(${task.id}, event)"><i class="ri-delete-bin-line"></i></button>` : ''}
                 </div>
             `;
             monthlyContainer.innerHTML += taskHTML;
@@ -316,6 +329,11 @@ document.addEventListener('DOMContentLoaded', () => {
         renderYearly();
         renderMonthly();
         
+        // Update Add Buttons visibility based on ownership
+        const isMyProfile = currentUser === myIdentity;
+        document.getElementById('add-yearly-btn').style.visibility = isMyProfile ? 'visible' : 'hidden';
+        document.getElementById('add-monthly-btn').style.visibility = isMyProfile ? 'visible' : 'hidden';
+
         // Also update MY view if it's currently visible
         const viewMy = document.getElementById('view-my');
         if (viewMy && viewMy.style.display !== 'none') {
@@ -464,6 +482,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.updateProgress = function(goalId, stepValue) {
+        if (currentUser !== myIdentity) {
+            alert('자신의 목표 진척도만 수정할 수 있습니다.');
+            return;
+        }
         const userObj = appData[currentUser];
         const goal = userObj.yearlyGoals.find(g => g.id === goalId);
         if (goal) {
