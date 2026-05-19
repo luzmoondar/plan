@@ -435,46 +435,33 @@ section {
     padding: 20px 0;
 }
 
-/* Progress Steps (Bars) */
+/* Progress Steps (Circles) */
 .step-bars-container {
     display: flex;
-    gap: 6px;
-    height: 36px;
-    margin-top: 12px;
+    gap: 4px;
+    margin-top: 16px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.step-bar {
-    flex: 1;
+.step-circle {
+    width: 22px;
+    height: 22px;
     background-color: var(--border-color);
-    border-radius: 8px;
+    border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
-    overflow: hidden;
+    flex-shrink: 0;
 }
 
-.step-bar.active {
+.step-circle.active {
     background-color: var(--primary-color);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
 }
 
-.step-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-muted);
-    transition: color 0.3s ease;
-    z-index: 1;
-}
-
-.step-bar.active .step-label {
-    color: white;
-}
-
-.step-bar:active {
-    transform: scale(0.95);
+.step-circle:active {
+    transform: scale(0.85);
 }
 
 .delete-btn {

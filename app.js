@@ -461,12 +461,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         userObj.yearlyGoals.forEach(goal => {
             let stepsHtml = '';
-            for (let i = 25; i <= 100; i += 25) {
+            for (let i = 10; i <= 100; i += 10) {
                 const isChecked = goal.progress >= i;
                 stepsHtml += `
-                    <div class="step-bar ${isChecked ? 'active' : ''}" 
-                         onclick="updateProgress(${goal.id}, ${i})">
-                         <span class="step-label">${i}%</span>
+                    <div class="step-circle ${isChecked ? 'active' : ''}" 
+                         onclick="updateProgress(${goal.id}, ${i})" title="${i}%">
                     </div>
                 `;
             }
@@ -495,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (goal) {
             // If clicking the current exact progress, unset it to the previous step or 0
             if (goal.progress === stepValue) {
-                goal.progress = stepValue - 25;
+                goal.progress = stepValue - 10;
             } else {
                 goal.progress = stepValue;
             }
